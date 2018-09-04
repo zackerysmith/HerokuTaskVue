@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html id="my-app">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <link rel="stylesheet" href="./local.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+</head>
+
+<body>
+    <div class="has-background-dark head-wrapper">
+        <div id="AppHeader" class="gap-left-10">
+            <div name="titles" class="hero-body">
+                <div class="container">
+                    <h1 class="title has-text-white">
+                        Personal TO DO App
+                        <div class="tags has-addons is-pulled-right">
+                            <span class="button tag is-danger" @click="OpenPopup=true">Reset File</span>
+                            <a class="tag" @click="OpenPopup=true">
+                                <i class="icon fas fa-times"></i>
+                            </a>
+                            <reset-alert v-if="OpenPopup" @reset-me="ResetMe" @close-me="OpenPopup=!OpenPopup"></reset-alert>
+                        </div>
+                        <div class="tags has-addons is-pulled-right" style="margin-right: 10px">
+                            <span class="button tag is-info" @click="GenReport">Generate Report</span>
+                            <span class="tag">
+                                <i class="icon fas fa-download "></i>
+                            </span>
+                        </div>
+                        <div class="tags has-addons is-pulled-right" style="margin-right: 10px">
+                            <span class="button tag is-success" @click="DownloadDB">DownLoad DB</span>
+                            <span class="tag">
+                                <i class="icon fas fa-download "></i>
+                            </span>
+                            
+                        </div>
+                        <div class="tags has-addons is-pulled-right" style="margin-right: 10px">
+                            <span class="button tag is-warning" @click="OpenImport=true">Upload DB</span>
+                            <span class="tag">
+                                <i class="icon fas fa-upload "></i>
+                            </span>
+                            <import-popup v-if="OpenImport" @close-import="OpenImport=!OpenImport" @update-db ="UpdateDB" ></import-popup>
+                        </div>
+                    </h1>
+                    <h2 class="subtitle has-text-white">
+                        Your TO DO App At Hand
+                    </h2>
+                </div>
+            </div>
+
+            <div name="textbox-buttons" id="txtbox">
+                <section class="container">
+                    <input type="text" class="input has-background-white-ter is-medium" v-model="SearchTerm">
+                    <div class="container section is-small">
+                        <button name="Add" class="button is-primary is-outlined is-medium" @click="showModal = true">Add</button>
+                        <popup @close="showModal = false" v-if="showModal" :pophead="popheadValue" :popcontent="popcontentValue" :popfooter="popfooterValue"
+                            @save="AddReminder"> Custom </popup>
+                        <button name="Search" class="button is-info is-outlined is-medium" @click="SearchTodo">Search</button>
+                        <button name="Clear" class="button is-info is-outlined is-small" @click="ClearSearch" v-if="SearchTerm.length>1">Clear Search</button>
+                        <button name="StatusToggleCompleted" class="button is-success is-outlined is-medium is-pulled-right" @click="toggleShow"
+                            v-if="ToggleButton">Completed Items</button>
+                        <button name="StatusTogglePending" class="button is-danger is-outlined is-medium is-pulled-right" @click="toggleShow" v-else>Pending Items</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
+    <div id="AppData" class="section ">
+        <div v-if="datapresent > 0">
+            <div v-for="item in TodoItems">
+                <todo-item :todo="item" @todo-done="TodoComplete" @todo-undo="TodoUndo" @del-tag="TodoDelTag" @del-todo="TodoDelete" @open-todo-edit-ui="OpenTodoEdit">
+                </todo-item>
+                <edit-ui v-if="item.editMe" :taskitem="item" :tagvalue="item.tags.join(',')" :duedateval="item.duedate" @edit-todo-item="EditTodo"
+                    @close-edit="CloseTodoEdit"></edit-ui>
+            </div>
+        </div>
+        <div style="height: 100%;" v-else>
+            <span class="title is-1"> NO ITEMS TO DISPLAY </span>
+        </div>
+    </div>
+
+
+
+
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lokijs/1.5.5/lokijs.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.14.0/js/canvas-to-blob.min.js"></script>
+<script type="text/javascript" src="./script.js"></script>
+
+</html>
